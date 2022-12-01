@@ -16,6 +16,7 @@ def sequencing(path, length=160, stride=10, downsample=1):
     x_sequence = np.array([x[i:i+length] for i in range(0, size - (length - stride + 1), stride)]) # (1000,3) -> (85, 160, 3)
     return np.moveaxis(x_sequence, [0,1,2], [0,2,1]) # (85, 160, 3) -> (85, 3, 160)
 
+# to save data use: np.save("name.npy", data)
 
 def sequencing_input(x, length=160, stride=10, downsample=1):
     size = len(x) # 
