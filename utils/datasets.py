@@ -432,12 +432,13 @@ def split_and_scale(X_s, X_u, y_s, test_size=0.2, val_size=0.2, seed=666):
 
 	#scaling
 	scaler = MultivariateScaler(dimension=X_train.shape[1])
-	if X_u not None:
+	if X_u is not None:
 		scaler.fit(np.vstack((X_train, X_u)))
 	else:
 		scaler.fit(X_train)
 	X_train = scaler.transform(X_train)
-	X_u = scaler.transform(X_u) if not None else None
+	if X_u is not None:
+		X_u = scaler.transform(X_u)
 	X_test = scaler.transform(X_test)
 
 	if val_size != None:
