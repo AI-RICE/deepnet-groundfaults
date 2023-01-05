@@ -140,21 +140,26 @@ def load_and_preprocess_new(
 		one_hot=False, sub_samples=1.0, balanced=True, label_idx=80, seed=666
 	):
 	path = os.path.join(path,"data/dataset/")
-	sup_dataset = pd.read_csv(os.path.join(path, "supervised_dataset.csv"))#_sgf
-	unsup_dataset = pd.read_csv(os.path.join(path, "unsupervised_dataset.csv"))#_sgf
+	sup_dataset = os.readdir(path)#pd.read_csv(os.path.join(path, "supervised_dataset.csv"))#_sgf
+	sequences = [x for x in sup_dataset if "squence"]
+	labels = [x for x in sup_dataset if "labels"]
+	sequences = sorted(sequences)
+	labels = sorted(labels)
+	#unsup_dataset = #pd.read_csv(os.path.join(path, "unsupervised_dataset.csv"))#_sgf
 
 	X_s, Y, X_u = [], [], []
-	for _, seq in sup_dataset.iterrows():
-		X_s.append(np.load(os.path.join(path, seq["sequences"])))
-		Y.append(np.load(os.path.join(path, seq["labels"])))
+	for _, (seq, lab) in zip(sequences, labels):
+		X_s.append(np.load(os.path.join(path, seq)))
+		Y.append(np.load(os.path.join(path, lab)))
 
-	for _, seq in unsup_dataset.iterrows():
-		X_u.append(np.load(os.path.join(path, seq["sequences"])))
+	#for _, seq in unsup_dataset.iterrows():
+	#	X_u.append(np.load(os.path.join(path, seq["sequences"])))
 	
 	X_s = np.vstack(X_s)
-	X_u = np.vstack(X_u)
+	#X_u = np.vstack(X_u)
 	Y = np.vstack(Y)
 	y_s = Y[:,label_idx]
+	X_u = None
 	
 	vs = 0.2 if validation else None
 
@@ -427,9 +432,12 @@ def split_and_scale(X_s, X_u, y_s, test_size=0.2, val_size=0.2, seed=666):
 
 	#scaling
 	scaler = MultivariateScaler(dimension=X_train.shape[1])
-	scaler.fit(np.vstack((X_train, X_u)))
+	if X_u not None:
+		scaler.fit(np.vstack((X_train, X_u)))
+	else:
+		scaler.fit(X_train)
 	X_train = scaler.transform(X_train)
-	X_u = scaler.transform(X_u)
+	X_u = scaler.transform(X_u) if not None else None
 	X_test = scaler.transform(X_test)
 
 	if val_size != None:
