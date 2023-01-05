@@ -140,9 +140,9 @@ def load_and_preprocess_new(
 		one_hot=False, sub_samples=1.0, balanced=True, label_idx=80, seed=666
 	):
 	path = os.path.join(path,"data/dataset/")
-	sup_dataset = os.readdir(path)#pd.read_csv(os.path.join(path, "supervised_dataset.csv"))#_sgf
-	sequences = [x for x in sup_dataset if "squence"]
-	labels = [x for x in sup_dataset if "labels"]
+	sup_dataset = os.listdir(path)#pd.read_csv(os.path.join(path, "supervised_dataset.csv"))#_sgf
+	sequences = [x for x in sup_dataset if "sequence" in x]
+	labels = [x for x in sup_dataset if "labels" in x]
 	sequences = sorted(sequences)
 	labels = sorted(labels)
 	#unsup_dataset = #pd.read_csv(os.path.join(path, "unsupervised_dataset.csv"))#_sgf
